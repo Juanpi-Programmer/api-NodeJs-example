@@ -10,7 +10,8 @@ const index = (req, res) => {
 }
 
 const show = (req, res) => {
-    if(req.body.users) return res.status(500).send({error});
+    const error =  req.body.error;
+    if(req.body.error) return res.status(500).send({error});
     if(!req.body.users) return res.status(404).send({message: 'NOT FOUND'});
     let users = req.body.users;
     return res.status(200).send({users});
@@ -49,12 +50,12 @@ const find = (req, res, next) => {
     query[req.params.key] = req.params.value;
     console.log(query);
     User.find(query).then(users => {
-        if(!users.length) return next()
+        if(!users.length) return next();
         req.body.users = users;
         return next(); 
     }).catch(error => {
-        req.body.error = error;
         console.log(error);
+        req.body.error = error;
         next();
     });
 }
